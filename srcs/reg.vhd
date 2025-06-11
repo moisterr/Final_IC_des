@@ -5,8 +5,8 @@ entity reg is
     port ( 
     clk, rst: in STD_logic;
 	en: in std_logic;
-	d: in std_logic_vector(23 downto 0);
-	q: out std_logic_vector(23 downto 0) );
+	d: in std_logic_vector(31 downto 0);
+	q: out std_logic_vector(31 downto 0) );
 end reg;
 
 architecture rtl of reg is

@@ -22,13 +22,16 @@ entity controller is
 	-- memory control signal
     mem_w_en, mem_r_en : out std_logic;
 	mem_w_select : out std_logic;
-	mem_addr_select: out std_logic_vector(2 downto 0)
+	mem_addr_select: out std_logic_vector(2 downto 0);
+	
+	fail: in std_logic;
+	error: out std_logic
     );
 end controller;
 
 architecture rtl of controller is
 --    signal state : std_logic_vector(5 downto 0);
-    type state_type is (s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12,
+    type state_type is (error_check, err, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12,
     s13, s14, s15, s16, s17, s18, s19, s20, s21, s22);
     signal state: state_type;
 begin
@@ -41,8 +44,16 @@ begin
 	                state <= s1;
                 when s1 => 
 	                if start = '1' then 
+	                    state <= error_check;
+	                end if;
+	            when error_check =>
+	                if fail = '1' then 
+	                    state <= err;
+	                else
 	                    state <= s2;
 	                end if;
+	            when err =>
+	                state <= s21;
 	            when s2 => 
 	                state <= s3;
 	            when s3 => 
@@ -125,6 +136,8 @@ begin
     -- memory control signal
     mem_w_en <= '1' when (state = s4 or state = s7 or state = s18) else '0';
     mem_r_en <= '1' when (state = s12 or state = s13 or state = s14 or state = s15) else '0';
+    
+    -- memory access
     mem_w_select <= '1' when state = s18 else '0';
     mem_addr_select <= "000" when state = s4 else
 		               "001" when state = s7 else
@@ -134,5 +147,6 @@ begin
 		               "101" when state = s15 else
 		               "110" when state = s18 else "111";
 
+    error <= '1' when state = err else '0';
     done <= '1' when state = s20 else '0';
 end rtl;

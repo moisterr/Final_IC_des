@@ -21,8 +21,8 @@ package lib is
         port (
 	       rst, clk: in STD_logic;
 	       en: in std_logic;
-	       d: in std_logic_vector(23 downto 0);
-	       q: out std_logic_vector(23 downto 0)
+	       d: in std_logic_vector(31 downto 0);
+	       q: out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -33,8 +33,8 @@ package lib is
             we_in  : IN std_logic;
             re_in  : IN std_logic;
             addr   : IN std_logic_vector(17 downto 0);  -- 9 for input + 16 for output
-            d_in   : IN std_logic_vector(23 downto 0);
-            d_out  : OUT std_logic_vector(23 downto 0)
+            d_in   : IN std_logic_vector(31 downto 0);
+            d_out  : OUT std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -58,9 +58,11 @@ package lib is
 	        base_addr_in, base_addr_out: in std_logic_vector(17 downto 0);
 	        mem_w_select: in std_logic;
 	        mem_addr_select: in std_logic_vector(2 downto 0);
-	        mem_read_data: in std_logic_vector(23 downto 0);
+	        mem_read_data: in std_logic_vector(31 downto 0);
             mem_addr: out std_logic_vector(17 downto 0) ;
-            mem_write_data: out std_logic_vector(23 downto 0)
+            mem_write_data: out std_logic_vector(31 downto 0);
+            
+            fail: out std_logic
         );
     end component;
 
@@ -84,7 +86,10 @@ package lib is
 	        -- memory control signal
             mem_w_en, mem_r_en : out std_logic;
 	        mem_w_select : out std_logic;
-	        mem_addr_select: out std_logic_vector(2 downto 0)
+	        mem_addr_select: out std_logic_vector(2 downto 0);
+	        
+	        fail: in std_logic;
+	        error: out std_logic
         );
     end component;
 
@@ -98,10 +103,11 @@ package lib is
             M, N: in std_logic_vector(8 downto 0);
             base_addr_in, base_addr_out: in std_logic_vector(17 downto 0);
     
-            mem_read_data: in std_logic_vector(23 downto 0);
+            mem_read_data: in std_logic_vector(31 downto 0);
 	        mem_w_en,mem_r_en: out std_logic;
-	        mem_write_data: out std_logic_vector(23 downto 0);
-	        mem_addr: out std_logic_vector(17 downto 0)
+	        mem_write_data: out std_logic_vector(31 downto 0);
+	        mem_addr: out std_logic_vector(17 downto 0);
+	        error: out std_logic
         );
     end component;
 end lib;

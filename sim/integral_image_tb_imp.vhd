@@ -8,11 +8,12 @@ use work.lib.all;
 library std;
 use std.textio.all;
 
-entity integral_image_tb is
-end integral_image_tb;
+entity integral_image_tb_imp is
+end integral_image_tb_imp;
 
-architecture tb of integral_image_tb is
+architecture tb of integral_image_tb_imp is
     constant clk_period : time := 10 ns;
+    signal clk_imp : std_logic := '0';
     signal clk : std_logic := '0';
     signal start,rst : std_logic;
     
@@ -28,10 +29,21 @@ begin
 
 	clk <= not clk after clk_period / 2;
 	
+	clk_implement_process : process
+begin
+    wait for 3 ns; 
+    while true loop
+        clk_imp <= '0';
+        wait for clk_period / 2;
+        clk_imp <= '1';
+        wait for clk_period / 2;
+    end loop;
+end process;
+
 	dut : integral_image
         port map(
             rst => rst,
-	        clk => clk, 
+	        clk => clk_imp, 
 	        start => start,
 	        
 	        M => M,
@@ -60,35 +72,7 @@ begin
 	    
     stimulus: process
         begin	
---            -- Test case 1: Error width
---            M <= std_logic_vector(to_unsigned(2, 9));
---            N <= std_logic_vector(to_unsigned(5, 9));
---	        base_addr_in <= std_logic_vector(to_unsigned(0, 18));
---            base_addr_out <= std_logic_vector(to_unsigned(50, 18));
-        
---	        rst <= '1';
---	        wait for clk_period;
---            rst <= '0';
---            start <= '1';
---	        wait for 2 * clk_period;
---	        start <= '0';
---	        wait for 5 * clk_period;
-	        
---	        -- Test case 2: Error address
---            M <= std_logic_vector(to_unsigned(5, 9));
---            N <= std_logic_vector(to_unsigned(5, 9));
---	        base_addr_in <= std_logic_vector(to_unsigned(40, 18));
---            base_addr_out <= std_logic_vector(to_unsigned(50, 18));
-        
---	        rst <= '1';
---	        wait for clk_period;
---            rst <= '0';
---            start <= '1';
---	        wait for 2 * clk_period;
---	        start <= '0';
---	        wait for 5 * clk_period;
-	        
-	        -- Test case 3: 5x5
+
 	        M <= std_logic_vector(to_unsigned(5, 9));
             N <= std_logic_vector(to_unsigned(5, 9));
 	        base_addr_in <= std_logic_vector(to_unsigned(0, 18));
@@ -101,36 +85,6 @@ begin
 	        wait until done = '1';
 	        start <= '0';
 	        wait for 5 * clk_period;
-	        
---	        -- Test case 4: 8x8
---	        M <= std_logic_vector(to_unsigned(8, 9));
---            N <= std_logic_vector(to_unsigned(8, 9));
---	        base_addr_in <= std_logic_vector(to_unsigned(100, 18));
---            base_addr_out <= std_logic_vector(to_unsigned(200, 18));
-        
---	        rst <= '1';
---	        wait for clk_period;
---            rst <= '0';
---            start <= '1';
---	        wait until done = '1';
---	        start <= '0';
---	        wait for 5 * clk_period;
-	        
---	        -- Test case 0: 256x256
---	        M <= std_logic_vector(to_unsigned(256, 9));
---            N <= std_logic_vector(to_unsigned(256, 9));
---	        base_addr_in <= std_logic_vector(to_unsigned(300, 18));
---            base_addr_out <= std_logic_vector(to_unsigned(66000, 18));
-        
---	        rst <= '1';
---	        wait for clk_period;
---            rst <= '0';
---            start <= '1';
---	        wait until done = '1';
---	        start <= '0';
---	        wait for 5 * clk_period;
-	        
---	        assert false report "End simulation " severity failure;
 	        wait;
     end process; 
     monitor: process(clk)
@@ -157,4 +111,3 @@ begin
         end if;
     end process;
 end tb;
-

@@ -15,8 +15,9 @@ entity integral_image is
     
     mem_addr: out std_logic_vector(17 downto 0);
 	mem_r_en,mem_w_en: out std_logic;
-	mem_read_data: in std_logic_vector(23 downto 0);
-	mem_write_data: out std_logic_vector(23 downto 0)
+	mem_read_data: in std_logic_vector(31 downto 0);
+	mem_write_data: out std_logic_vector(31 downto 0);
+	error: out std_logic
     );
 end integral_image;
     
@@ -31,6 +32,9 @@ architecture rtl of integral_image is
 
     signal mem_w_select: std_logic;
     signal mem_addr_select: std_logic_vector(2 downto 0);
+    
+    signal fail: std_logic;
+    
 begin
     control_unit: controller
 	   port map(
@@ -59,7 +63,10 @@ begin
            mem_w_en => mem_w_en, 
            mem_r_en => mem_r_en,
 	       mem_w_select => mem_w_select,
-	       mem_addr_select => mem_addr_select
+	       mem_addr_select => mem_addr_select,
+	       
+	       fail => fail,
+           error => error
 	   );
 	
 	datapath_unit : datapath
@@ -91,6 +98,8 @@ begin
 	       mem_w_select => mem_w_select,
            mem_read_data => mem_read_data,
            mem_addr => mem_addr,
-           mem_write_data => mem_write_data 
+           mem_write_data => mem_write_data,
+           
+           fail => fail
        );
 end rtl;

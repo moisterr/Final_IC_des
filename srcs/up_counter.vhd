@@ -28,6 +28,7 @@ begin
         end if;
     end process;
 
+    -- z = 1 when temp_counter reach stop
     z <= '1' when temp_counter = stop else '0';
     count <= temp_counter;
 
